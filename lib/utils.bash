@@ -2,73 +2,89 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for <YOUR TOOL>.
-GH_REPO="<TOOL REPO>"
-TOOL_NAME="<YOUR TOOL>"
-TOOL_TEST="<TOOL CHECK>"
+ASDF_GOAPP_PLUGIN_NAME="goapp"
+
+if [[ ${ASDF_GOAPP_DEBUG:-} -eq 1 ]]; then
+  # In debug mode, dunp everything to a log file
+  # got a little help from https://askubuntu.com/a/1345538/985855
+
+  ASDF_GOAPP_DEBUG_LOG_PATH="/tmp/${ASDF_GOAPP_PLUGIN_NAME}-debug.log"
+  mkdir -p "$(dirname "$ASDF_GOAPP_DEBUG_LOG_PATH")"
+
+  printf "\n\n-------- %s ----------\n\n" "$(date)" >>"$ASDF_GOAPP_DEBUG_LOG_PATH"
+
+  exec > >(tee -ia "$ASDF_GOAPP_DEBUG_LOG_PATH")
+  exec 2> >(tee -ia "$ASDF_GOAPP_DEBUG_LOG_PATH" >&2)
+
+  exec 19>>"$ASDF_GOAPP_DEBUG_LOG_PATH"
+  export BASH_XTRACEFD=19
+  set -x
+fi
 
 fail() {
-  echo -e "asdf-$TOOL_NAME: $*"
+  echo >&2 -e "${ASDF_GOAPP_PLUGIN_NAME}: [ERROR] $*"
   exit 1
 }
 
-curl_opts=(-fsSL)
-
-# NOTE: You might want to remove this if <YOUR TOOL> is not hosted on GitHub releases.
-if [ -n "${GITHUB_API_TOKEN:-}" ]; then
-  curl_opts=("${curl_opts[@]}" -H "Authorization: token $GITHUB_API_TOKEN")
-fi
-
-sort_versions() {
-  sed 'h; s/[+-]/./g; s/.p\([[:digit:]]\)/.z\1/; s/$/.z/; G; s/\n/ /' |
-    LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n | awk '{print $2}'
-}
-
-list_github_tags() {
-  git ls-remote --tags --refs "$GH_REPO" |
-    grep -o 'refs/tags/.*' | cut -d/ -f3- |
-    sed 's/^v//' # NOTE: You might want to adapt this sed to remove non-version strings from tags
-}
-
-list_all_versions() {
-  # TODO: Adapt this. By default we simply list the tag names from GitHub releases.
-  # Change this function if <YOUR TOOL> has other means of determining installable versions.
-  list_github_tags
-}
-
-download_release() {
-  local version filename url
-  version="$1"
-  filename="$2"
-
-  # TODO: Adapt the release URL convention for <YOUR TOOL>
-  url="$GH_REPO/archive/v${version}.tar.gz"
-
-  echo "* Downloading $TOOL_NAME release $version..."
-  curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
-}
-
-install_version() {
-  local install_type="$1"
-  local version="$2"
-  local install_path="${3%/bin}/bin"
-
-  if [ "$install_type" != "version" ]; then
-    fail "asdf-$TOOL_NAME supports release installs only"
+log() {
+  if [[ ${ASDF_GOAPP_DEBUG:-} -eq 1 ]]; then
+    echo >&2 -e "${ASDF_GOAPP_PLUGIN_NAME}: $*"
   fi
+}
 
+resolve_go_module() {
+  local package_path=$1
+  local bitbucket_regex='(bitbucket.org/[^/]+/[^/]+)(:?/.*)?'
+  local github_regex='(github.com/[^/]+/[^/]+)(:?/.*)?'
+  local launchpad_regex='(launchpad.net/(:?~[^/]+/)?[^/]+(:?/[^/]+)?)(:?/.*)?'
+  local jazz_regex='(hub.jazz.net/git/[^/]+/[^/]+)(:?/.*)?'
+
+  log "Original package path $package_path"
+  
+  local module
+  if [[ $package_path =~ $bitbucket_regex ]]; then
+    module=${BASH_REMATCH[1]}
+  elif [[ $package_path =~ $github_regex ]]; then
+    module=${BASH_REMATCH[1]}
+  elif [[ $package_path =~ $launchpad_regex ]]; then
+    module=${BASH_REMATCH[1]}
+  elif [[ $package_path =~ $jazz_regex ]]; then
+    module=${BASH_REMATCH[1]}
+  else
+    log "None of the regexes matched to the package path, assuming module name equals package path"
+    module=$package
+  fi
+  log "Resolved to $module"
+  echo -n $module
+}
+
+add_plugin() {
+  local asdf_plugins_dir="$1"
+  local plugin_source_dir="$2"
+  local plugin_name="$3"
+  local go_package_path="$4"
+  local go_module="$5"
+
+  local install_path="$asdf_plugins_dir/$plugin_name"
+  if [ -d $install_path ]; then
+    fail "Plugin named $plugin_name is already added"
+  fi
+  
   (
-    mkdir -p "$install_path"
-    cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
+    mkdir -p "$install_path/lib"
+    for s in $(ls "$plugin_source_dir/lib"); do
+      ln -s "$plugin_source_dir/lib/$s" "$install_path/lib"
+    done
+    ln -s "$plugin_source_dir/bin" "$install_path/bin"
+    local plugin_config_file="$install_path/lib/plugin.config"
+    echo "ASDF_GOAPP_PLUGIN_NAME=$plugin_name" > "$plugin_config_file"
+    echo "ASDF_GOAPP_PACKAGE_PATH=$go_package_path" >> "$plugin_config_file"
+    echo "ASDF_GOAPP_MODULE=$go_module" >> "$plugin_config_file"
 
-    # TODO: Assert <YOUR TOOL> executable exists.
-    local tool_cmd
-    tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
-    test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
-
-    echo "$TOOL_NAME $version installation was successful!"
+    echo "Plugin $plugin_name added successfully!"
   ) || (
-    rm -rf "$install_path"
-    fail "An error occurred while installing $TOOL_NAME $version."
+    # rm -rf "$install_path"
+    fail "An error occurred while adding plugin $plugin_name."
   )
 }
+
