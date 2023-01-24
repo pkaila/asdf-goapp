@@ -52,7 +52,7 @@ resolve_go_module() {
     module=${BASH_REMATCH[1]}
   else
     log "None of the regexes matched to the package path, assuming module name equals package path"
-    module=$package
+    module=$package_path
   fi
   log "Resolved to $module"
   echo -n $module
