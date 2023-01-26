@@ -112,25 +112,47 @@ list_all_versions() {
 
 install_version() {
   local install_type="$1"
-  local version="$2"
+  local full_version="$2"
   local install_path="${3%/bin}/bin"
   local gobin=$install_path
   # local goroot="${install_path%/bin}"
   local gotooldir=$install_path
-  # TODO: Install go version if version has @go version
+
+  local versions=(${full_version//\@/ })
+  local module_version=${versions[0]}
+  if [ "${#versions[@]}" -gt 1 ]; then
+    if ! asdf plugin list | grep golang; then
+      fail "Cannot install $ASDF_GOAPP_PLUGIN_NAME $full_version - asdf golang plugin is not installed!"
+    fi
+
+    go_version=${versions[1]}
+    if [[ $go_version =~ ^([0-9]+)\.([0-9]+)\. ]]; then
+      local go_version_major=${BASH_REMATCH[1]}
+      local go_version_minor=${BASH_REMATCH[2]}
+      if ! [ [ "$go_version_major" -ge 1 ] && [ "$go_version_minor" -ge 16 ] ]; then
+        fail "Given go version is not >= 1.16, cannot proceed with installation"
+      fi
+    else
+      fail "Unable to parse go version to validate it is of version >= 1.16, cannot proceed with installation"
+    fi
+
+    asdf install golang "$go_version"
+    ASDF_GOAPP_RESOLVED_GO_PATH=$(ASDF_GOLANG_VERSION="$go_version" asdf which go)
+  fi
+
   (
     mkdir -p "$install_path"
-    GOBIN=$gobin GOTOOLDIR=$gotooldir $ASDF_GOAPP_RESOLVED_GO_PATH install $ASDF_GOAPP_PACKAGE_PATH@$version
+    GOBIN=$gobin GOTOOLDIR=$gotooldir $ASDF_GOAPP_RESOLVED_GO_PATH install $ASDF_GOAPP_PACKAGE_PATH@$module_version
 
     # TODO: Assert <YOUR TOOL> executable exists.
     # local tool_cmd
     # tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
     # test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
 
-    echo "$ASDF_GOAPP_PLUGIN_NAME $version installation was successful!"
+    echo "$ASDF_GOAPP_PLUGIN_NAME $module_version installation was successful!"
   ) || (
     # rm -rf "$install_path"
-    fail "An error occurred while installing $ASDF_GOAPP_PLUGIN_NAME $version."
+    fail "An error occurred while installing $ASDF_GOAPP_PLUGIN_NAME $module_version."
   )
 }
 
