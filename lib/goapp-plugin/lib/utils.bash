@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Most of this file is copied and adapted from the excellent asdf-pyapp plugin
+# by Andy Mroczkowski. The project can be found from https://github.com/amrox/asdf-pyapp
+# and is licensed under the license included in the LICENSE -file in the root of this project.
+
 set -euo pipefail
 
 script_dir="$(dirname "${BASH_SOURCE[0]}")"
@@ -8,8 +12,8 @@ source "${script_dir}/plugin.config"
 ASDF_GOAPP_RESOLVED_GO_PATH=
 
 if [[ ${ASDF_GOAPP_DEBUG:-} -eq 1 ]]; then
-  # In debug mode, dunp everything to a log file
-  # got a little help from https://askubuntu.com/a/1345538/985855
+  # In debug mode, dump everything to a log file
+  # From: https://github.com/amrox/asdf-pyapp/blob/master/lib/utils.bash
 
   ASDF_GOAPP_DEBUG_LOG_PATH="/tmp/${ASDF_GOAPP_PLUGIN_NAME}-debug.log"
   mkdir -p "$(dirname "$ASDF_GOAPP_DEBUG_LOG_PATH")"

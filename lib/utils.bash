@@ -5,8 +5,8 @@ set -euo pipefail
 ASDF_GOAPP_PLUGIN_NAME="goapp"
 
 if [[ ${ASDF_GOAPP_DEBUG:-} -eq 1 ]]; then
-  # In debug mode, dunp everything to a log file
-  # got a little help from https://askubuntu.com/a/1345538/985855
+  # In debug mode, dump everything to a log file
+  # From: https://github.com/amrox/asdf-pyapp/blob/master/lib/utils.bash
 
   ASDF_GOAPP_DEBUG_LOG_PATH="/tmp/${ASDF_GOAPP_PLUGIN_NAME}-debug.log"
   mkdir -p "$(dirname "$ASDF_GOAPP_DEBUG_LOG_PATH")"
