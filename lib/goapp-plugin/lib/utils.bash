@@ -7,7 +7,7 @@
 set -euo pipefail
 
 script_dir="$(dirname "${BASH_SOURCE[0]}")"
-source "${script_dir}/plugin.config"
+source "$(dirname "$script_dir")/plugin.config"
 
 ASDF_GOAPP_RESOLVED_GO_PATH=
 

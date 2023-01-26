@@ -71,12 +71,10 @@ add_plugin() {
   fi
   
   (
-    mkdir -p "$install_path/lib"
-    for s in $(ls "$plugin_source_dir/lib"); do
-      ln -s "$plugin_source_dir/lib/$s" "$install_path/lib"
-    done
+    mkdir -p "$install_path"
+    ln -s "$plugin_source_dir/lib" "$install_path/lib"
     ln -s "$plugin_source_dir/bin" "$install_path/bin"
-    local plugin_config_file="$install_path/lib/plugin.config"
+    local plugin_config_file="$install_path/plugin.config"
     echo "ASDF_GOAPP_PLUGIN_NAME=$plugin_name" > "$plugin_config_file"
     echo "ASDF_GOAPP_PACKAGE_PATH=$go_package_path" >> "$plugin_config_file"
     echo "ASDF_GOAPP_MODULE=$go_module" >> "$plugin_config_file"
