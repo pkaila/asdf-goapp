@@ -16,8 +16,25 @@ jobs:
           - macos-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - name: asdf_plugin_test
-        uses: asdf-vm/actions/plugin-test@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install asdf dependencies
+        uses: asdf-vm/actions/install@v1
         with:
-          command: asdf goapp add
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tool_versions: |
+            golang 1.19.4
+
+      - name: Add plugin
+        run: asdf plugin add goapp .
+
+      - name: Add goapp-prototool plugin
+        run: asdf goapp add github.com/uber/prototool/cmd/prototool
+
+      - name: Install prototool v1.10.0
+        run: asdf install goapp-prototool v1.10.0
+
+      - name: Test
+        run: |
+          asdf global goapp-prototool v1.10.0
+          prototool version
