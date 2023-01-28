@@ -55,7 +55,7 @@ resolve_go_module() {
     module=$package_path
   fi
   log "Resolved to $module"
-  echo -n $module
+  echo -n "$module"
 }
 
 add_plugin() {
@@ -66,7 +66,7 @@ add_plugin() {
   local go_module="$5"
 
   local install_path="$asdf_plugins_dir/$plugin_name"
-  if [ -d $install_path ]; then
+  if [ -d "$install_path" ]; then
     fail "Plugin named $plugin_name is already added"
   fi
   

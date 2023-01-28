@@ -3,6 +3,6 @@
 set -euo pipefail
 
 echo "The goapp plugin does not provide any installable versions."
-echo "Use 'asdf goapp add' to add new goapp plugins.""
+echo "Use 'asdf goapp add' to add new goapp plugins."
 
 exit 0
