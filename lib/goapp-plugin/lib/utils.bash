@@ -108,6 +108,7 @@ resolve_go_path() {
 }
 
 list_all_versions() {
+  resolve_go_path
   $ASDF_GOAPP_RESOLVED_GO_PATH list -versions -m "$ASDF_GOAPP_MODULE" | cut -d' ' -f2-
 }
 
@@ -141,17 +142,16 @@ install_version() {
 
     asdf install golang "$go_version"
     ASDF_GOAPP_RESOLVED_GO_PATH=$(ASDF_GOLANG_VERSION="$go_version" asdf which go)
+  else
+    resolve_go_path
   fi
 
   (
     mkdir -p "$bin_path"
-    GOBIN=$gobin GOTOOLDIR=$gotooldir $ASDF_GOAPP_RESOLVED_GO_PATH install "$ASDF_GOAPP_PACKAGE_PATH@$module_version" ||
-      fail "Go install failed."
+    GOBIN=$gobin GOTOOLDIR=$gotooldir $ASDF_GOAPP_RESOLVED_GO_PATH install "$ASDF_GOAPP_PACKAGE_PATH@$module_version" \
+      || fail "Go install failed."
 
-    test -n "$(
-      shopt -s nullglob
-      echo "$bin_path"/*
-    )" || fail "No binaries were installed."
+    test -n "$(shopt -s nullglob; echo "$bin_path"/*)" || fail "No binaries were installed."
     for b in "$bin_path"/*; do
       test -x "$b" || fail "Binary $b is not executable"
     done
@@ -162,9 +162,8 @@ install_version() {
     # remove an unnecessary mkdir warning when trying to re-install the app
     # There is no need to keep the download directory around as we never downloaded anything.
     test ! -z ${ASDF_DOWNLOAD_PATH+x} && test -d "$ASDF_DOWNLOAD_PATH" && rm -rf "$ASDF_DOWNLOAD_PATH"
-
+    
     fail "An error occurred while installing $ASDF_GOAPP_PLUGIN_NAME $module_version."
   )
 }
 
-resolve_go_path
