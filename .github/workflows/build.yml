@@ -25,6 +25,9 @@ jobs:
           tool_versions: |
             golang 1.19.4
 
+      - name: Set golang version
+        run: asdf global golang 1.19.4
+
       - name: Add plugin
         run: asdf plugin add goapp .
 
