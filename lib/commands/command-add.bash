@@ -9,6 +9,8 @@ plugins_dir="$(dirname "$plugin_dir")"
 # shellcheck source=../lib/utils.bash
 source "${plugin_dir}/lib/utils.bash"
 
+local plugin_name package_path module_name
+
 if [ "$#" -eq 1 ]; then
   plugin_name="${1##*/}"
   package_path="$1"
@@ -36,7 +38,7 @@ else
 fi
 
 plugin_name="goapp-${plugin_name}"
-if test -n "$module_name"; then
+if test -n ${module_name+x}; then
   module_name="$(resolve_go_module "$package_path")"
 fi
 
