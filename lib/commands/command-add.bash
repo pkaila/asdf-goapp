@@ -28,4 +28,3 @@ module_name="$(resolve_go_module "$package_path")"
 echo "Adding Go package ${package_path} from module $module_name as ASDF plugin ${plugin_name}"
 log "Plugins dir: $plugins_dir, plugin source dir: $plugin_source_dir"
 add_plugin "$plugins_dir" "$plugin_source_dir" "$plugin_name" "$package_path" "$module_name"
-

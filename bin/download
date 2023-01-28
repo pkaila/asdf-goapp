@@ -5,4 +5,3 @@ set -euo pipefail
 # There is nothing to download as this plugin just provides new commands
 
 exit 0
-

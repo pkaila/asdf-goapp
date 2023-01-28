@@ -159,4 +159,3 @@ install_version() {
 }
 
 resolve_go_path
-

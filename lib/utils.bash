@@ -40,7 +40,7 @@ resolve_go_module() {
   local jazz_regex='(hub.jazz.net/git/[^/]+/[^/]+)(:?/.*)?'
 
   log "Original package path $package_path"
-  
+
   local module
   if [[ $package_path =~ $bitbucket_regex ]]; then
     module=${BASH_REMATCH[1]}
@@ -69,15 +69,15 @@ add_plugin() {
   if [ -d "$install_path" ]; then
     fail "Plugin named $plugin_name is already added"
   fi
-  
+
   (
     mkdir -p "$install_path"
     ln -s "$plugin_source_dir/lib" "$install_path/lib"
     ln -s "$plugin_source_dir/bin" "$install_path/bin"
     local plugin_config_file="$install_path/plugin.config"
-    echo "ASDF_GOAPP_PLUGIN_NAME=$plugin_name" > "$plugin_config_file"
-    echo "ASDF_GOAPP_PACKAGE_PATH=$go_package_path" >> "$plugin_config_file"
-    echo "ASDF_GOAPP_MODULE=$go_module" >> "$plugin_config_file"
+    echo "ASDF_GOAPP_PLUGIN_NAME=$plugin_name" >"$plugin_config_file"
+    echo "ASDF_GOAPP_PACKAGE_PATH=$go_package_path" >>"$plugin_config_file"
+    echo "ASDF_GOAPP_MODULE=$go_module" >>"$plugin_config_file"
 
     echo "Plugin $plugin_name added successfully!"
   ) || (
@@ -85,4 +85,3 @@ add_plugin() {
     fail "An error occurred while adding plugin $plugin_name."
   )
 }
-

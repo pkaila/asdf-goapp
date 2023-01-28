@@ -12,4 +12,3 @@ source "${plugin_dir}/lib/utils.bash"
 log "Nothing to download"
 
 exit 0
-
