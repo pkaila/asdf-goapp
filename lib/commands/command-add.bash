@@ -9,8 +9,7 @@ plugins_dir="$(dirname "$plugin_dir")"
 # shellcheck source=../lib/utils.bash
 source "${plugin_dir}/lib/utils.bash"
 
-local plugin_name package_path module_name
-
+module_name=
 if [ "$#" -eq 1 ]; then
   plugin_name="${1##*/}"
   package_path="$1"
