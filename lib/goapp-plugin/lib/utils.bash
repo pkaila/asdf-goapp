@@ -114,10 +114,11 @@ list_all_versions() {
 install_version() {
   # local install_type="$1"
   local full_version="$2"
-  local install_path="${3%/bin}/bin"
-  local gobin=$install_path
-  # local goroot="${install_path%/bin}"
-  local gotooldir=$install_path
+  local install_path="$3"
+  local bin_path="${install_path%/bin}/bin"
+  local gobin=$bin_path
+  # local goroot="${bin_path%/bin}"
+  local gotooldir=$bin_path
 
   # shellcheck disable=SC2206
   local versions=(${full_version//\@/ })
@@ -143,17 +144,25 @@ install_version() {
   fi
 
   (
-    mkdir -p "$install_path"
-    GOBIN=$gobin GOTOOLDIR=$gotooldir $ASDF_GOAPP_RESOLVED_GO_PATH install "$ASDF_GOAPP_PACKAGE_PATH@$module_version"
+    mkdir -p "$bin_path"
+    GOBIN=$gobin GOTOOLDIR=$gotooldir $ASDF_GOAPP_RESOLVED_GO_PATH install "$ASDF_GOAPP_PACKAGE_PATH@$module_version" ||
+      fail "Go install failed."
 
-    # TODO: Assert <YOUR TOOL> executable exists.
-    # local tool_cmd
-    # tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
-    # test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
+    test -n "$(
+      shopt -s nullglob
+      echo "$bin_path"/*
+    )" || fail "No binaries were installed."
+    for b in "$bin_path"/*; do
+      test -x "$b" || fail "Binary $b is not executable"
+    done
 
     echo "$ASDF_GOAPP_PLUGIN_NAME $module_version installation was successful!"
   ) || (
-    # rm -rf "$install_path"
+    # The download directory will not be automatically removed, let's remove it here to
+    # remove an unnecessary mkdir warning when trying to re-install the app
+    # There is no need to keep the download directory around as we never downloaded anything.
+    test ! -z ${ASDF_DOWNLOAD_PATH+x} && test -d "$ASDF_DOWNLOAD_PATH" && rm -rf "$ASDF_DOWNLOAD_PATH"
+
     fail "An error occurred while installing $ASDF_GOAPP_PLUGIN_NAME $module_version."
   )
 }
