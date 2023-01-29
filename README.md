@@ -9,7 +9,7 @@ for managing the versions of the given goapp. The reason for this slightly convo
 adding a generic goapp requires more information than just a name of a plugin. See the [usage](#usage) -section
 for more information.
 
-The plug-in is inspired by and borrows some of the code from the excellent
+The plugin is inspired by and borrows some of the code from the excellent
 [pyapp plugin](https://github.com/amrox/asdf-pyapp) by [Andy Mroczkowski](https://github.com/amrox/).
 
 </div>
