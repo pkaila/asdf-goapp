@@ -100,4 +100,3 @@ print_usage() {
   echo "  module_name:  Override the Go module name if the plugin does not use the"
   echo "                correct one automatically."
 }
-
