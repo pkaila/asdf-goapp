@@ -2,9 +2,7 @@
 
 # asdf-goapp [![Build](https://github.com/pkaila/asdf-goapp/actions/workflows/build.yml/badge.svg)](https://github.com/pkaila/asdf-goapp/actions/workflows/build.yml) [![Lint](https://github.com/pkaila/asdf-goapp/actions/workflows/lint.yml/badge.svg)](https://github.com/pkaila/asdf-goapp/actions/workflows/lint.yml)
 
-A generic "goapp" plugin for the [asdf version manager](https://asdf-vm.com).
-
-A "goapp" in this case is any CLI tool written in Go, which can be installed with go install.
+A generic "goapp" plugin for the [asdf version manager](https://asdf-vm.com). A "goapp" in this case is any CLI tool written in Go, which can be installed with go install.
 
 This plugin does not itself install any goapps, but adds a new command to asdf for adding new goapp plugins
 for managing the versions of the given goapp. The reason for this slightly convoluted usage is that
@@ -49,8 +47,8 @@ asdf goapp add github.com/user/project/dir/<tool>
 # For example add a plugin for prototool
 asdf goapp add github.com/uber/prototool/cmd/prototool
 
-# For all options to "asdf goapp add" run
-asdf goapp add
+# For more help run "asdf goapp help"
+asdf goapp help
 ```
 
 Now you can interact with the goapp-\<tool\> plugin as with any other asdf plugin:

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "Provides a command to add goapp plugins. Run 'asdf goapp help' for more information."
+

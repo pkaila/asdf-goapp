@@ -21,18 +21,7 @@ elif [ "$#" -eq 3 ]; then
   package_path="$2"
   module_name="$3"
 else
-  echo "Usage:"
-  echo "  asdf goapp add [<plugin_name>] <package_path>"
-  echo "  asdf goapp add <plugin_name> <package_path> <module_name>"
-  echo ""
-  echo "Arguments:"
-  echo "  plugin_name:  The name you want to give for the plugin, if not given the last"
-  echo "                part of the package_path will be used. The name is always"
-  echo "                prepended with 'goapp-'."
-  echo "  package_path: The path for the go package to install when installing with the"
-  echo "                plugin."
-  echo "  module_name:  Override the Go module name if the plugin does not use the"
-  echo "                correct one automatically."
+  print_usage
   exit 1
 fi
 
