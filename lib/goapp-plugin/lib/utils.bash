@@ -109,7 +109,7 @@ resolve_go_path() {
 
 list_all_versions() {
   resolve_go_path
-  $ASDF_GOAPP_RESOLVED_GO_PATH list -versions -m "$ASDF_GOAPP_MODULE" | cut -d' ' -f2-
+  $ASDF_GOAPP_RESOLVED_GO_PATH list -versions -m "$ASDF_GOAPP_MODULE_NAME" | cut -d' ' -f2-
 }
 
 install_version() {
@@ -118,7 +118,6 @@ install_version() {
   local install_path="$3"
   local bin_path="${install_path%/bin}/bin"
   local gobin=$bin_path
-  # local goroot="${bin_path%/bin}"
   local gotooldir=$bin_path
 
   # shellcheck disable=SC2206

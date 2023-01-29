@@ -27,7 +27,7 @@ fi
 
 plugin_name="goapp-${plugin_name}"
 if test -n ${module_name+x}; then
-  module_name="$(resolve_go_module "$package_path")"
+  module_name="$(resolve_go_module_name "$package_path")"
 fi
 
 echo "Adding a new goapp plugin:"

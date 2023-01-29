@@ -32,7 +32,7 @@ log() {
   fi
 }
 
-resolve_go_module() {
+resolve_go_module_name() {
   local package_path=$1
   local bitbucket_regex='(bitbucket.org/[^/]+/[^/]+)(:?/.*)?'
   local github_regex='(github.com/[^/]+/[^/]+)(:?/.*)?'
@@ -41,21 +41,21 @@ resolve_go_module() {
 
   log "Original package path $package_path"
 
-  local module
+  local module_name
   if [[ $package_path =~ $bitbucket_regex ]]; then
-    module=${BASH_REMATCH[1]}
+    module_name=${BASH_REMATCH[1]}
   elif [[ $package_path =~ $github_regex ]]; then
-    module=${BASH_REMATCH[1]}
+    module_name=${BASH_REMATCH[1]}
   elif [[ $package_path =~ $launchpad_regex ]]; then
-    module=${BASH_REMATCH[1]}
+    module_name=${BASH_REMATCH[1]}
   elif [[ $package_path =~ $jazz_regex ]]; then
-    module=${BASH_REMATCH[1]}
+    module_name=${BASH_REMATCH[1]}
   else
     log "None of the regexes matched to the package path, assuming module name equals package path"
-    module=$package_path
+    module_name=$package_path
   fi
-  log "Resolved to $module"
-  echo -n "$module"
+  log "Resolved to $module_name"
+  echo -n "$module_name"
 }
 
 add_plugin() {
@@ -63,7 +63,7 @@ add_plugin() {
   local plugin_source_dir="$2"
   local plugin_name="$3"
   local go_package_path="$4"
-  local go_module="$5"
+  local go_module_name="$5"
 
   local install_path="$asdf_plugins_dir/$plugin_name"
   if [ -d "$install_path" ]; then
@@ -77,11 +77,10 @@ add_plugin() {
     local plugin_config_file="$install_path/plugin.config"
     echo "ASDF_GOAPP_PLUGIN_NAME=$plugin_name" >"$plugin_config_file"
     echo "ASDF_GOAPP_PACKAGE_PATH=$go_package_path" >>"$plugin_config_file"
-    echo "ASDF_GOAPP_MODULE=$go_module" >>"$plugin_config_file"
+    echo "ASDF_GOAPP_MODULE_NAME=$go_module_name" >>"$plugin_config_file"
 
     echo "Plugin $plugin_name added successfully!"
   ) || (
-    # rm -rf "$install_path"
     fail "An error occurred while adding plugin $plugin_name."
   )
 }
