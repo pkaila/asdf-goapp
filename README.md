@@ -1,6 +1,6 @@
 <div align="center">
 
-# asdf-goapp [![Build](https://github.com/pkaila/asdf-goapp/actions/workflows/build.yml/badge.svg)](https://github.com/pkaila/asdf-goapp/actions/workflows/build.yml) [![Lint](https://github.com/pkaila/asdf-goapp/actions/workflows/lint.yml/badge.svg)](https://github.com/pkaila/asdf-goapp/actions/workflows/lint.yml)
+# asdf-goapp [![Build](https://github.com/pkaila/asdf-goapp/actions/workflows/build.yml/badge.svg)](https://github.com/pkaila/asdf-goapp/actions/workflows/build.yml) [![Lint](https://github.com/pkaila/asdf-goapp/actions/workflows/lint.yml/badge.svg)](https://github.com/pkaila/asdf-goapp/actions/workflows/lint.yml)[![Latest Release](https://img.shields.io/github/v/tag/pkaila/asdf-goapp?label=Latest%20Release&sort=semver)](https://github.com/pkaila/asdf-goapp/releases/latest)
 
 A generic "goapp" plugin for the [asdf version manager](https://asdf-vm.com). A "goapp" in this case is any CLI tool written in Go, which can be installed with go install.
 
