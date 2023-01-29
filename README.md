@@ -2,9 +2,17 @@
 
 # asdf-goapp [![Build](https://github.com/pkaila/asdf-goapp/actions/workflows/build.yml/badge.svg)](https://github.com/pkaila/asdf-goapp/actions/workflows/build.yml) [![Lint](https://github.com/pkaila/asdf-goapp/actions/workflows/lint.yml/badge.svg)](https://github.com/pkaila/asdf-goapp/actions/workflows/lint.yml)
 
-A generic "goapp" plugin for the [asdf version manager](https://asdf-vm.com). A "goapp" in this case is any
-CLI tool written in Go, which can be installed with go install. The plug-in is inspired by and borrows some
-of the code from the excellent [pyapp plugin](https://github.com/amrox/asdf-pyapp) by [Andy Mroczkowski](https://github.com/amrox/).
+A generic "goapp" plugin for the [asdf version manager](https://asdf-vm.com).
+
+A "goapp" in this case is any CLI tool written in Go, which can be installed with go install.
+
+This plugin does not itself install any goapps, but adds a new command to asdf for adding new goapp plugins
+for managing the versions of the given goapp. The reason for this slightly convoluted usage is that
+adding a generic goapp requires more information than just a name of a plugin. See the [usage](#usage) -section
+for more information.
+
+The plug-in is inspired by and borrows some of the code from the excellent
+[pyapp plugin](https://github.com/amrox/asdf-pyapp) by [Andy Mroczkowski](https://github.com/amrox/).
 
 </div>
 
@@ -12,13 +20,16 @@ of the code from the excellent [pyapp plugin](https://github.com/amrox/asdf-pyap
 
 - [Dependencies](#dependencies)
 - [Install](#install)
+- [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
 
 # Dependencies
 
 - `bash`: generic POSIX utilities.
-- `go` >= 1.16 or the [asdf-golang](https://github.com/kennyp/asdf-golang) plugin for building the goapps
+- `go`: for installing the goapps
+  - Version >= 1.16 found in the path OR
+  - [asdf-golang](https://github.com/kennyp/asdf-golang) plugin
 
 # Install
 
@@ -27,8 +38,9 @@ Plugin:
 ```shell
 asdf plugin add goapp https://github.com/pkaila/asdf-goapp.git
 ```
+# Usage
 
-Add a goapp-<tool> plugin:
+Add a goapp-\<tool\> plugin:
 
 ```shell
 # Add goapp-<tool> plugin`
@@ -41,7 +53,7 @@ asdf goapp add github.com/uber/prototool/cmd/prototool
 asdf goapp add
 ```
 
-Now you can interact with the goapp-<tool> plugin as with any other asdf plugin:
+Now you can interact with the goapp-\<tool\> plugin as with any other asdf plugin:
 
 ```shell
 # Show all installable versions
