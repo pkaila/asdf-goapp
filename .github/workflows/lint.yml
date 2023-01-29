@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@6844d09
+        uses: asdf-vm/actions/install@6844d09b13209e7d2ce3b63d2b089a2acef581ec
 
       - name: Run ShellCheck
         run: scripts/shellcheck.bash
@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@6844d09
+        uses: asdf-vm/actions/install@6844d09b13209e7d2ce3b63d2b089a2acef581ec
 
       - name: List file to shfmt
         run: shfmt -f .
