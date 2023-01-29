@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/pkaila/asdf-goapp/compare/v1.0.0...v1.1.0) (2023-01-29)
+
+
+### Miscellaneous Chores
+
+* release 1.1.0 ([bfb5619](https://github.com/pkaila/asdf-goapp/commit/bfb5619db1244909e488fc77b1267b501cd73018))
+
 ## 1.0.0 (2023-01-29)
 
 
